@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Làm bài thi | Online Exam</title>
+
+<!-- Bootstrap 5 + Icons + Fonts -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #eef2f7 0%, #d9e2ec 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* ========= SIDEBAR ========= */
+    .sidebar {
+        background: linear-gradient(180deg, #0f172a 0%, #1e2a3a 100%);
+        backdrop-filter: blur(2px);
+        min-height: 100vh;
+        box-shadow: 8px 0 25px -12px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .sidebar h4 {
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: linear-gradient(120deg, #fff, #a5f3fc);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 1.6rem;
+        margin-bottom: 0;
+        padding: 28px 0 16px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar a {
+        color: #e2e8f0;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        margin: 6px 12px;
+        border-radius: 14px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        font-size: 0.95rem;
+    }
+
+    .sidebar a i {
+        width: 24px;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .sidebar a:hover {
+        background: rgba(13, 110, 253, 0.25);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .sidebar a.text-danger {
+        color: #f87171;
+    }
+    .sidebar a.text-danger:hover {
+        background: rgba(248, 113, 113, 0.2);
+        color: #ffb4b4;
+    }
+
+    /* ========= MAIN CONTENT ========= */
+    .main-content {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 28px 32px;
+    }
+
+    /* Header card */
+    .exam-header {
+        background: white;
+        border-radius: 28px;
+        padding: 20px 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 8px 20px -6px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.03);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .exam-title h2 {
+        font-weight: 700;
+        font-size: 1.6rem;
+        background: linear-gradient(135deg, #0f172a, #2d3a5e);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin: 0;
+    }
+
+    .exam-title p {
+        margin: 0;
+        color: #64748b;
+        font-size: 0.85rem;
+    }
+
+    /* Timer */
+    .timer-box {
+        background: #0f172a;
+        border-radius: 60px;
+        padding: 10px 24px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .timer-box i {
+        font-size: 1.2rem;
+        margin-right: 8px;
+        color: #facc15;
+    }
+    .timer-box span {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: monospace;
+        letter-spacing: 2px;
+    }
+    .progress-timer {
+        width: 100%;
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 3px;
+        margin-top: 12px;
+        overflow: hidden;
+    }
+    .progress-timer-bar {
+        height: 100%;
+        width: 100%;
+        background: #3b82f6;
+        border-radius: 3px;
+        transition: width 1s linear;
+    }
+
+    /* Question card */
+    .question-card {
+        background: white;
+        border-radius: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: 0.2s;
+        border: 1px solid #eef2ff;
+        overflow: hidden;
+    }
+    .question-card:hover {
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .card-header-q {
+        background: #f8fafc;
+        padding: 16px 24px;
+        border-bottom: 1px solid #eef2ff;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .card-header-q i {
+        color: #2563eb;
+        font-size: 1.2rem;
+    }
+    .card-body-q {
+        padding: 20px 24px;
+    }
+    .form-check {
+        margin-bottom: 12px;
+        padding-left: 2rem;
+    }
+    .form-check-input {
+        margin-top: 0.2rem;
+        cursor: pointer;
+    }
+    .form-check-label {
+        font-weight: 500;
+        color: #334155;
+        cursor: pointer;
+    }
+    .form-check-input:checked + .form-check-label {
+        color: #1e40af;
+    }
+
+    /* Submit button */
+    .submit-area {
+        text-align: center;
+        margin-top: 32px;
+        margin-bottom: 20px;
+    }
+    .btn-submit {
+        background: linear-gradient(95deg, #22c55e, #16a34a);
+        border: none;
+        padding: 14px 40px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 60px;
+        color: white;
+        transition: 0.2s;
+        box-shadow: 0 8px 18px rgba(34,197,94,0.2);
+    }
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(34,197,94,0.4);
+        background: linear-gradient(95deg, #4ade80, #22c55e);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar {
+            min-height: auto;
+            margin-bottom: 20px;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .exam-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+        .timer-box span {
+            font-size: 1.4rem;
+        }
+    }
+    @media (max-width: 576px) {
+        .card-header-q {
+            font-size: 1rem;
+            padding: 12px 16px;
+        }
+        .card-body-q {
+            padding: 16px;
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row g-0">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar p-0">
+            <h4 class="text-center"><i class="fas fa-graduation-cap me-2"></i>Online Exam</h4>
+            <div class="menu-links mt-3">
+                <a th:href="@{/home}"><i class="fas fa-home"></i> Trang chủ</a>
+                <a th:href="@{/users}"><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <a th:href="@{/subjects}"><i class="fas fa-book-open"></i> Quản lý môn học</a>
+                <a th:href="@{/questions}"><i class="fas fa-question-circle"></i> Quản lý câu hỏi</a>
+                <a th:href="@{/select-subject}"><i class="fas fa-pen-alt"></i> Làm bài thi</a>
+                <a th:href="@{/history}"><i class="fas fa-history"></i> Lịch sử thi</a>
+                <a th:href="@{/dashboard}"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a th:href="@{/statistics}"><i class="fas fa-chart-simple"></i> Thống kê</a>
+                <a th:href="@{/change-password}"><i class="fas fa-key"></i> Đổi mật khẩu</a>
+                <a th:href="@{/logout}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-10 main-content">
+            <div class="exam-header">
+                <div class="exam-title">
+                    <h2><i class="fas fa-pen-fancy me-2"></i>Bài thi: <span th:text="${subject.subjectName}"></span></h2>
+                    <p><i class="fas fa-question-circle"></i> Hãy chọn đáp án đúng cho mỗi câu hỏi</p>
+                </div>
+                <div>
+                    <div class="timer-box">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span id="timer">05:00</span>
+                    </div>
+                    <div class="progress-timer">
+                        <div class="progress-timer-bar" id="timerProgress"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form thi -->
+            <form th:action="@{/submit-exam}" method="post" id="examForm">
+                <input type="hidden" name="subjectId" th:value="${subject.id}">
+
+                <div th:each="q, iterStat : ${questions}" class="question-card">
+                    <div class="card-header-q">
+                        <i class="fas fa-question-circle"></i> Câu <span th:text="${iterStat.index + 1}"></span>
+                    </div>
+                    <div class="card-body-q">
+                        <h5 class="mb-3 fw-semibold" th:text="${q.questionText}">Nội dung câu hỏi</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="A" id="q_${q.id}_A">
+                            <label class="form-check-label" th:for="'q_' + ${q.id} + '_A'">
+                                A. <span th:text="${q.optionA}"></span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="B" id="q_${q.id}_B">
+                            <label class="form-check-label" th:for="'q_' + ${q.id} + '_B'">
+                                B. <span th:text="${q.optionB}"></span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="C" id="q_${q.id}_C">
+                            <label class="form-check-label" th:for="'q_' + ${q.id} + '_C'">
+                                C. <span th:text="${q.optionC}"></span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:name="'question_' + ${q.id}" value="D" id="q_${q.id}_D">
+                            <label class="form-check-label" th:for="'q_' + ${q.id} + '_D'">
+                                D. <span th:text="${q.optionD}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-area">
+                    <button type="submit" class="btn-submit"><i class="fas fa-paper-plane me-2"></i> Nộp bài</button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="text-center mt-4 pt-2 small text-muted">
+                <i class="far fa-copyright"></i> 2025 Online Exam Platform | Làm bài thi trắc nghiệm
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Timer logic (300 giây = 5 phút)
+    let totalTime = 300; // seconds
+    let timeLeft = totalTime;
+    let timerElement = document.getElementById("timer");
+    let progressBar = document.getElementById("timerProgress");
+    let form = document.getElementById("examForm");
+
+    function updateTimerDisplay() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        if (seconds < 10) seconds = "0" + seconds;
+        timerElement.innerText = minutes + ":" + seconds;
+        // Cập nhật thanh tiến trình
+        let percent = (timeLeft / totalTime) * 100;
+        progressBar.style.width = percent + "%";
+        if (percent <= 20) {
+            progressBar.style.background = "#ef4444";
+        } else if (percent <= 50) {
+            progressBar.style.background = "#f59e0b";
+        } else {
+            progressBar.style.background = "#3b82f6";
+        }
+    }
+
+    let interval = setInterval(function () {
+        if (timeLeft <= 0) {
+            clearInterval(interval);
+            alert("Hết giờ làm bài! Hệ thống sẽ tự động nộp bài.");
+            form.submit();
+        } else {
+            timeLeft--;
+            updateTimerDisplay();
+        }
+    }, 1000);
+
+    updateTimerDisplay();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

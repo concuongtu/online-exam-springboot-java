@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kết quả thi | Online Exam</title>
+
+<!-- Bootstrap 5 + Icons + Fonts -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Hiệu ứng nền động */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        background-size: cover;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    /* Card kết quả */
+    .result-card {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        border-radius: 48px;
+        padding: 40px 30px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        text-align: center;
+        transition: transform 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.2);
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .result-card:hover {
+        transform: scale(1.02);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Icon kết quả */
+    .result-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 60px;
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        color: #4f46e5;
+        font-size: 3.5rem;
+        animation: bounceIn 0.8s;
+    }
+
+    @keyframes bounceIn {
+        0% { transform: scale(0.3); opacity: 0; }
+        50% { transform: scale(1.05); }
+        70% { transform: scale(0.9); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Điểm số */
+    .score-circle {
+        margin: 20px auto;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, #4f46e5 0deg, #e0e7ff 0deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        transition: all 0.5s;
+    }
+
+    .score-inner {
+        width: 160px;
+        height: 160px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .score-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #1e293b;
+        line-height: 1;
+    }
+
+    .score-total {
+        font-size: 1.2rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .score-label {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-top: 8px;
+    }
+
+    /* Thông báo theo điểm */
+    .message-box {
+        margin: 24px 0;
+        padding: 16px 20px;
+        border-radius: 60px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .message-excellent {
+        background: #dcfce7;
+        color: #166534;
+    }
+    .message-good {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    .message-pass {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+    .message-fail {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Nút hành động */
+    .action-buttons {
+        margin-top: 30px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        padding: 12px 28px;
+        border-radius: 40px;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(95deg, #4f46e5, #6366f1);
+        color: white;
+        border: none;
+    }
+    .btn-primary-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px -8px #4f46e5;
+        background: linear-gradient(95deg, #6366f1, #818cf8);
+        color: white;
+    }
+
+    .btn-outline-custom {
+        background: transparent;
+        border: 2px solid #cbd5e1;
+        color: #475569;
+    }
+    .btn-outline-custom:hover {
+        border-color: #4f46e5;
+        background: #f8fafc;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .result-card {
+            padding: 30px 20px;
+            margin: 20px;
+        }
+        .score-circle {
+            width: 160px;
+            height: 160px;
+        }
+        .score-inner {
+            width: 130px;
+            height: 130px;
+        }
+        .score-number {
+            font-size: 2.5rem;
+        }
+        .btn-custom {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        .message-box {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="result-card">
+                <!-- Icon và tiêu đề -->
+                <div class="result-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h1 class="fw-bold mb-2" style="color: #0f172a;">Kết quả thi</h1>
+                
+                <!-- Vòng tròn điểm số (tính phần trăm và góc) -->
+                <div th:with="percent=${(score / total) * 100}">
+                    <div class="score-circle" th:style="'background: conic-gradient(from 0deg, #4f46e5 0deg, #e0e7ff ' + (${percent} * 3.6) + 'deg);'">
+                        <div class="score-inner">
+                            <div class="score-number">
+                                <span th:text="${score}"></span>
+                                <span class="score-total">/<span th:text="${total}"></span></span>
+                            </div>
+                            <div class="score-label">Điểm số</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông báo dựa trên điểm -->
+                <div th:with="percent=${score * 100 / total}">
+                    <div th:if="${percent >= 80}" class="message-box message-excellent">
+                        <i class="fas fa-trophy fa-lg"></i> Xuất sắc! Bạn đã đạt thành tích cao.
+                    </div>
+                    <div th:if="${percent >= 65 and percent < 80}" class="message-box message-good">
+                        <i class="fas fa-star fa-lg"></i> Tốt lắm! Hãy cố gắng hơn nữa nhé.
+                    </div>
+                    <div th:if="${percent >= 50 and percent < 65}" class="message-box message-pass">
+                        <i class="fas fa-thumbs-up fa-lg"></i> Bạn đã đỗ! Hãy ôn tập để cải thiện.
+                    </div>
+                    <div th:if="${percent < 50}" class="message-box message-fail">
+                        <i class="fas fa-frown fa-lg"></i> Bạn chưa đạt. Đừng nản, hãy thử lại!
+                    </div>
+                </div>
+
+                <!-- Nút hành động -->
+                <div class="action-buttons">
+                    <a th:href="@{/home}" class="btn-custom btn-primary-custom">
+                        <i class="fas fa-home"></i> Về trang chủ
+                    </a>
+                    <a th:href="@{/select-subject}" class="btn-custom btn-outline-custom">
+                        <i class="fas fa-redo-alt"></i> Thi lại
+                    </a>
+                </div>
+
+                <!-- Dòng chúc mừng nhỏ -->
+                <div class="mt-4 text-muted small">
+                    <i class="fas fa-heart text-danger"></i> Cảm ơn bạn đã tham gia!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

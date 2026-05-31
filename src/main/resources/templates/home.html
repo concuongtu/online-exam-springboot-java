@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Trang chủ | Online Exam</title>
+
+<!-- Bootstrap 5 + Icons + Fonts -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #eef2f7 0%, #d9e2ec 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* SIDEBAR HIỆN ĐẠI */
+    .sidebar {
+        background: linear-gradient(180deg, #0f172a 0%, #1e2a3a 100%);
+        backdrop-filter: blur(2px);
+        min-height: 100vh;
+        box-shadow: 8px 0 25px -12px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .sidebar .logo-area {
+        padding: 28px 0 20px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        margin-bottom: 20px;
+    }
+
+    .sidebar .logo-area h4 {
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: linear-gradient(120deg, #fff, #a5f3fc);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 1.6rem;
+        margin: 0;
+    }
+
+    .sidebar .logo-area p {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        margin-top: 6px;
+        color: #cbd5e1;
+    }
+
+    .sidebar a {
+        color: #e2e8f0;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        margin: 6px 12px;
+        border-radius: 14px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        font-size: 0.95rem;
+    }
+
+    .sidebar a i {
+        width: 24px;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .sidebar a:hover {
+        background: rgba(13, 110, 253, 0.25);
+        color: white;
+        transform: translateX(5px);
+        backdrop-filter: blur(4px);
+    }
+
+    .sidebar a.text-danger {
+        color: #f87171;
+    }
+
+    .sidebar a.text-danger:hover {
+        background: rgba(248, 113, 113, 0.2);
+        color: #ffb4b4;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 28px 32px;
+    }
+
+    /* Welcome card */
+    .welcome-card {
+        background: white;
+        border-radius: 28px;
+        padding: 20px 28px;
+        box-shadow: 0 8px 20px -6px rgba(0,0,0,0.05);
+        margin-bottom: 32px;
+        border: 1px solid rgba(0,0,0,0.03);
+        transition: all 0.2s;
+    }
+
+    .welcome-card h2 {
+        font-weight: 700;
+        font-size: 1.9rem;
+        background: linear-gradient(135deg, #0f172a, #2d3a5e);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin-bottom: 8px;
+    }
+
+    .role-badge {
+        background: #eef2ff;
+        padding: 6px 16px;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #1e40af;
+        display: inline-block;
+    }
+
+    /* Stat cards */
+    .stat-card {
+        border: none;
+        border-radius: 28px;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.3s;
+        box-shadow: 0 12px 24px -12px rgba(0,0,0,0.1);
+        cursor: default;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 30px -15px rgba(0,0,0,0.2);
+    }
+
+    .stat-card .card-body {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stat-info h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .stat-info h5 {
+        font-size: 1rem;
+        font-weight: 500;
+        margin: 8px 0 0;
+        opacity: 0.9;
+    }
+
+    .stat-icon i {
+        font-size: 3rem;
+        opacity: 0.4;
+        transition: all 0.2s;
+    }
+
+    .stat-card:hover .stat-icon i {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
+
+    /* card màu gradient riêng */
+    .card-primary {
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        color: white;
+    }
+    .card-success {
+        background: linear-gradient(135deg, #059669, #065f46);
+        color: white;
+    }
+    .card-warning {
+        background: linear-gradient(135deg, #d97706, #b45309);
+        color: white;
+    }
+    .card-danger {
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+        color: white;
+    }
+
+    /* Alert đẹp hơn */
+    .alert-modern {
+        background: linear-gradient(110deg, #e0f2fe, #d9e6f5);
+        border: none;
+        border-radius: 24px;
+        padding: 18px 28px;
+        color: #0c4a6e;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        margin-top: 20px;
+        border-left: 5px solid #0284c7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .sidebar {
+            min-height: auto;
+            margin-bottom: 20px;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .stat-card .card-body {
+            padding: 1.2rem;
+        }
+        .stat-info h3 {
+            font-size: 1.8rem;
+        }
+        .welcome-card h2 {
+            font-size: 1.5rem;
+        }
+        .sidebar a {
+            padding: 10px 18px;
+            margin: 4px 10px;
+        }
+    }
+
+    /* scrollbar đẹp */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row g-0">
+
+        <!-- SIDEBAR -->
+        <div class="col-md-2 sidebar p-0">
+            <div class="logo-area text-center">
+                <h4><i class="fas fa-graduation-cap me-2"></i>Online Exam</h4>
+                <p>Trắc nghiệm thông minh</p>
+            </div>
+
+            <div class="menu-links">
+                <a th:href="@{/home}"><i class="fas fa-home"></i> Trang chủ</a>
+
+                <a th:if="${user.role == 'admin'}" th:href="@{/users}"><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <a th:if="${user.role == 'admin'}" th:href="@{/subjects}"><i class="fas fa-book-open"></i> Quản lý môn học</a>
+                <a th:if="${user.role == 'admin'}" th:href="@{/questions}"><i class="fas fa-question-circle"></i> Quản lý câu hỏi</a>
+
+                <a th:href="@{/select-subject}"><i class="fas fa-pen-alt"></i> Làm bài thi</a>
+
+                <a th:if="${user.role == 'admin'}" th:href="@{/history}"><i class="fas fa-history"></i> Lịch sử thi</a>
+                <a th:if="${user.role == 'admin'}" th:href="@{/dashboard}"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a th:if="${user.role == 'admin'}" th:href="@{/statistics}"><i class="fas fa-chart-simple"></i> Thống kê</a>
+
+                <a th:href="@{/change-password}"><i class="fas fa-key"></i> Đổi mật khẩu</a>
+
+                <a th:href="@{/logout}" class="text-danger mt-2"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="col-md-10 main-content">
+            <!-- Welcome section -->
+            <div class="welcome-card d-flex flex-wrap justify-content-between align-items-center">
+                <div>
+                    <h2>Xin chào, <span th:text="${user.fullname}"></span> <i class="fas fa-smile-wink"></i></h2>
+                    <div class="role-badge mt-2">
+                        <i class="fas fa-tag me-1"></i> Vai trò: <span th:text="${user.role}" style="text-transform: capitalize;"></span>
+                    </div>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <i class="fas fa-laptop-code fa-2x" style="color: #2563eb;"></i>
+                </div>
+            </div>
+
+            <!-- Stat cards (Admin only) -->
+            <div th:if="${user.role == 'admin'}">
+                <div class="row g-4 mb-5">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card card-primary">
+                            <div class="card-body">
+                                <div class="stat-info">
+                                    <h3 th:text="${totalUsers}">0</h3>
+                                    <h5><i class="fas fa-user-friends me-1"></i> Tài khoản</h5>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card card-success">
+                            <div class="card-body">
+                                <div class="stat-info">
+                                    <h3 th:text="${totalSubjects}">0</h3>
+                                    <h5><i class="fas fa-layer-group me-1"></i> Môn học</h5>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card card-warning">
+                            <div class="card-body">
+                                <div class="stat-info">
+                                    <h3 th:text="${totalQuestions}">0</h3>
+                                    <h5><i class="fas fa-database me-1"></i> Câu hỏi</h5>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card card-danger">
+                            <div class="card-body">
+                                <div class="stat-info">
+                                    <h3 th:text="${totalResults}">0</h3>
+                                    <h5><i class="fas fa-chart-line me-1"></i> Lượt thi</h5>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alert chào mừng -->
+            <div class="alert-modern">
+                <i class="fas fa-chalkboard-user me-3 fa-lg"></i> 
+                Chào mừng bạn đến với hệ thống thi trắc nghiệm trực tuyến <strong>Spring Boot</strong>. 
+                Hãy lựa chọn môn học và bắt đầu chinh phục các câu hỏi ngay!
+            </div>
+
+            <!-- (Tuỳ chọn: thêm footer nhẹ nhàng) -->
+            <div class="text-center mt-5 pt-3 small text-muted">
+                <i class="far fa-copyright"></i> 2025 Online Exam Platform | Thiết kế hiện đại
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle (tùy chọn cho menu mobile nếu cần toggle, nhưng không bắt buộc) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

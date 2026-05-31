@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sửa người dùng | Online Exam</title>
+
+<!-- Bootstrap 5 + Icons + Fonts -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #eef2f7 0%, #d9e2ec 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* ========= SIDEBAR ========= */
+    .sidebar {
+        background: linear-gradient(180deg, #0f172a 0%, #1e2a3a 100%);
+        backdrop-filter: blur(2px);
+        min-height: 100vh;
+        box-shadow: 8px 0 25px -12px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .sidebar h4 {
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: linear-gradient(120deg, #fff, #a5f3fc);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 1.6rem;
+        margin-bottom: 0;
+        padding: 28px 0 16px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar a {
+        color: #e2e8f0;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px;
+        margin: 6px 12px;
+        border-radius: 14px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        font-size: 0.95rem;
+    }
+
+    .sidebar a i {
+        width: 24px;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .sidebar a:hover {
+        background: rgba(13, 110, 253, 0.25);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .sidebar a.text-danger {
+        color: #f87171;
+    }
+    .sidebar a.text-danger:hover {
+        background: rgba(248, 113, 113, 0.2);
+        color: #ffb4b4;
+    }
+
+    /* ========= MAIN CONTENT ========= */
+    .main-content {
+        background: #f8fafc;
+        min-height: 100vh;
+        padding: 28px 32px;
+    }
+
+    /* Header card */
+    .page-header {
+        background: white;
+        border-radius: 28px;
+        padding: 20px 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 8px 20px -6px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .page-header h2 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        background: linear-gradient(135deg, #0f172a, #2d3a5e);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .page-header h2 i {
+        background: none;
+        -webkit-background-clip: unset;
+        color: #2563eb;
+    }
+
+    /* Form card */
+    .form-card {
+        background: white;
+        border-radius: 28px;
+        padding: 32px 40px;
+        box-shadow: 0 12px 30px -12px rgba(0,0,0,0.1);
+        border: 1px solid rgba(0,0,0,0.03);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label i {
+        color: #4f46e5;
+        width: 20px;
+    }
+
+    .form-control {
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        background: #f8fafc;
+    }
+
+    .form-control:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        background: white;
+        outline: none;
+    }
+
+    select.form-control {
+        cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn-update {
+        background: linear-gradient(95deg, #4f46e5, #7c3aed);
+        border: none;
+        padding: 12px 28px;
+        border-radius: 40px;
+        font-weight: 600;
+        color: white;
+        transition: 0.2s;
+        margin-right: 12px;
+    }
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -8px #4f46e5;
+        background: linear-gradient(95deg, #6366f1, #8b5cf6);
+    }
+
+    .btn-back {
+        background: #64748b;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 40px;
+        font-weight: 600;
+        color: white;
+        transition: 0.2s;
+    }
+    .btn-back:hover {
+        background: #475569;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .sidebar {
+            min-height: auto;
+            margin-bottom: 20px;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .form-card {
+            padding: 24px 20px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-header h2 {
+            font-size: 1.5rem;
+        }
+        .btn-update, .btn-back {
+            width: 100%;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .btn-back {
+            margin-left: 0;
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row g-0">
+
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar p-0">
+            <h4 class="text-center"><i class="fas fa-graduation-cap me-2"></i>Online Exam</h4>
+            <div class="menu-links mt-3">
+                <a th:href="@{/home}"><i class="fas fa-home"></i> Trang chủ</a>
+                <a th:href="@{/users}"><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <a th:href="@{/subjects}"><i class="fas fa-book-open"></i> Quản lý môn học</a>
+                <a th:href="@{/questions}"><i class="fas fa-question-circle"></i> Quản lý câu hỏi</a>
+                <a th:href="@{/select-subject}"><i class="fas fa-pen-alt"></i> Làm bài thi</a>
+                <a th:href="@{/history}"><i class="fas fa-history"></i> Lịch sử thi</a>
+                <a th:href="@{/dashboard}"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a th:href="@{/statistics}"><i class="fas fa-chart-simple"></i> Thống kê</a>
+                <a th:href="@{/change-password}"><i class="fas fa-key"></i> Đổi mật khẩu</a>
+                <a th:href="@{/logout}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-10 main-content">
+            <div class="page-header">
+                <h2><i class="fas fa-user-edit"></i> Sửa người dùng</h2>
+            </div>
+
+            <div class="form-card">
+                <form th:action="@{/users/edit}" th:object="${userEdit}" method="post">
+                    <input type="hidden" th:field="*{id}">
+
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Tài khoản</label>
+                        <input type="text" th:field="*{username}" class="form-control" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Mật khẩu</label>
+                        <input type="text" th:field="*{password}" class="form-control" required>
+                        <small class="text-muted">Có thể thay đổi mật khẩu mới</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-signature"></i> Họ tên</label>
+                        <input type="text" th:field="*{fullname}" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Quyền</label>
+                        <select th:field="*{role}" class="form-control">
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn-update"><i class="fas fa-save me-2"></i> Cập nhật</button>
+                        <a th:href="@{/users}" class="btn-back"><i class="fas fa-arrow-left me-2"></i> Quay lại</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center mt-5 pt-2 small text-muted">
+                <i class="far fa-copyright"></i> 2025 Online Exam Platform | Sửa thông tin người dùng
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
