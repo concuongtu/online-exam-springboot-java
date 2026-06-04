@@ -10,6 +10,7 @@ import com.example.onlineexam.entity.Result;
 public interface ResultRepository extends JpaRepository<Result, Integer> {
 
     List<Result> findAllByOrderByIdDesc();
+    List<Result> findByUsernameOrderByIdDesc(String username);
 
     @Query("""
     		SELECT r.subjectId,

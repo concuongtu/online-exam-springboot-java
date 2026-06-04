@@ -73,6 +73,19 @@
         transform: translateX(5px);
     }
 
+    /* ===== ACTIVE MENU STYLES ===== */
+    .sidebar a.active {
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
+        color: white !important;
+        font-weight: 600;
+        border-left: 4px solid #93c5fd;
+        box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+
+    .sidebar a.active i {
+        color: white !important;
+    }
+
     .sidebar a.text-danger {
         color: #f87171;
     }
@@ -242,7 +255,8 @@
                 <a th:href="@{/questions}"><i class="fas fa-question-circle"></i> Quản lý câu hỏi</a>
                 <a th:href="@{/select-subject}"><i class="fas fa-pen-alt"></i> Làm bài thi</a>
                 <a th:href="@{/history}"><i class="fas fa-history"></i> Lịch sử thi</a>
-                <a th:href="@{/dashboard}"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <!-- ĐÃ GẮN CỨNG CLASS ACTIVE CHO DASHBOARD -->
+                <a th:href="@{/dashboard}" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
                 <a th:href="@{/statistics}"><i class="fas fa-chart-simple"></i> Thống kê</a>
                 <a th:href="@{/change-password}"><i class="fas fa-key"></i> Đổi mật khẩu</a>
                 <a th:href="@{/logout}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>

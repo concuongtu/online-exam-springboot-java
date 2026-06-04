@@ -19,23 +19,28 @@ public class HistoryController {
     }
 
     @GetMapping("/history")
-    public String history(
-            Model model,
-            HttpSession session) {
+    public String history(Model model, HttpSession session) {
 
-        User user =
-                (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
-        if(user == null ||
-           !user.getRole().equals("admin")) {
-
-            return "redirect:/home";
+        if (user == null) {
+            return "redirect:/login";
         }
 
-        model.addAttribute(
-                "results",
-                resultRepository.findAllByOrderByIdDesc()
-        );
+        model.addAttribute("user", user);
+        model.addAttribute("activePage", "history");
+
+        if ("admin".equals(user.getRole())) {
+            model.addAttribute(
+                    "results",
+                    resultRepository.findAllByOrderByIdDesc()
+            );
+        } else {
+            model.addAttribute(
+                    "results",
+                    resultRepository.findByUsernameOrderByIdDesc(user.getUsername())
+            );
+        }
 
         return "history";
     }

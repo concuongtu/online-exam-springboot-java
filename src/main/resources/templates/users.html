@@ -72,6 +72,19 @@
         transform: translateX(5px);
     }
 
+    /* Active style cho menu đang chọn */
+    .sidebar a.active {
+        background: linear-gradient(90deg, #2563eb, #3b82f6);
+        color: white !important;
+        font-weight: 600;
+        border-left: 4px solid #93c5fd;
+        box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+
+    .sidebar a.active i {
+        color: white !important;
+    }
+
     .sidebar a.text-danger {
         color: #f87171;
     }
@@ -294,6 +307,7 @@
     }
 </style>
 </head>
+
 <body>
 
 <div class="container-fluid p-0">
@@ -304,7 +318,8 @@
             <h4 class="text-center"><i class="fas fa-graduation-cap me-2"></i>Online Exam</h4>
             <div class="menu-links mt-3">
                 <a th:href="@{/home}"><i class="fas fa-home"></i> Trang chủ</a>
-                <a th:href="@{/users}"><i class="fas fa-users"></i> Quản lý người dùng</a>
+                <!-- ĐÃ GẮN CỨNG CLASS ACTIVE CHO QUẢN LÝ NGƯỜI DÙNG -->
+                <a th:href="@{/users}" class="active"><i class="fas fa-users"></i> Quản lý người dùng</a>
                 <a th:href="@{/subjects}"><i class="fas fa-book-open"></i> Quản lý môn học</a>
                 <a th:href="@{/questions}"><i class="fas fa-question-circle"></i> Quản lý câu hỏi</a>
                 <a th:href="@{/select-subject}"><i class="fas fa-pen-alt"></i> Làm bài thi</a>

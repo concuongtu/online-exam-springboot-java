@@ -32,31 +32,24 @@ this.resultRepository = resultRepository;
 }
 
     @GetMapping("/select-subject")
-    public String selectSubject(Model model) {
-
+    public String selectSubject(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        model.addAttribute("user", user);
         model.addAttribute("subjects", subjectRepository.findAll());
-
         return "select-subject";
     }
 
     @GetMapping("/exam/{subjectId}")
-    public String exam(@PathVariable Integer subjectId,
-                       Model model) {
-
-        Subject subject =
-                subjectRepository.findById(subjectId)
-                        .orElse(null);
-
-        if (subject == null) {
-            return "redirect:/select-subject";
-        }
-
-        List<Question> questions =
-                questionRepository.findBySubject(subject);
-
+    public String exam(@PathVariable Integer subjectId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        Subject subject = subjectRepository.findById(subjectId).orElse(null);
+        if (subject == null) return "redirect:/select-subject";
+        List<Question> questions = questionRepository.findBySubject(subject);
+        model.addAttribute("user", user);
         model.addAttribute("subject", subject);
         model.addAttribute("questions", questions);
-
         return "exam";
     }
 

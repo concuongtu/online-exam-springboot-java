@@ -22,3 +22,13 @@ body{
 .content{
     padding:20px;
 }
+.sidebar a.active {
+    background: #2563eb;
+    color: white !important;
+    border-left: 4px solid #fff;
+    font-weight: bold;
+}
+
+.sidebar a.active i {
+    color: white;
+}

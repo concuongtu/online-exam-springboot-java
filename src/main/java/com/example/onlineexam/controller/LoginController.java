@@ -42,8 +42,7 @@ public class LoginController {
                         HttpSession session,
                         Model model) {
 
-        User user =
-                userRepository.findByUsernameAndPassword(username, password);
+        User user = userRepository.findByUsernameAndPassword(username, password);
 
         if (user != null) {
             session.setAttribute("user", user);
@@ -57,8 +56,7 @@ public class LoginController {
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
 
-        User user =
-                (User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
 
         if (user == null) {
             return "redirect:/login";
@@ -81,50 +79,50 @@ public class LoginController {
         session.invalidate();
         return "redirect:/login";
     }
-        @GetMapping("/change-password")
-        public String changePasswordPage(HttpSession session) {
 
-            User user = (User) session.getAttribute("user");
+    // ========== ĐỔI MẬT KHẨU ==========
+    @GetMapping("/change-password")
+    public String changePasswordPage(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+        
+        // ✅ THÊM DÒNG NÀY để sidebar nhận biết quyền admin/user
+        model.addAttribute("user", user);
+        model.addAttribute("activePage", "password");
+        return "change-password";
+    }
 
-            if (user == null) {
-                return "redirect:/login";
-            }
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String oldPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpSession session,
+                                 Model model) {
 
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // ✅ THÊM DÒNG NÀY (cần thiết để hiển thị sidebar đúng khi có lỗi hoặc thành công)
+        model.addAttribute("user", user);
+
+        if (!user.getPassword().equals(oldPassword)) {
+            model.addAttribute("error", "Mật khẩu cũ không đúng");
             return "change-password";
         }
 
-        @PostMapping("/change-password")
-        public String changePassword(@RequestParam String oldPassword,
-                                     @RequestParam String newPassword,
-                                     @RequestParam String confirmPassword,
-                                     HttpSession session,
-                                     Model model) {
-
-            User user = (User) session.getAttribute("user");
-
-            if (user == null) {
-                return "redirect:/login";
-            }
-
-            if (!user.getPassword().equals(oldPassword)) {
-                model.addAttribute("error", "Mật khẩu cũ không đúng");
-                return "change-password";
-            }
-
-            if (!newPassword.equals(confirmPassword)) {
-                model.addAttribute("error", "Mật khẩu mới không khớp");
-                return "change-password";
-            }
-
-            user.setPassword(newPassword);
-
-            userRepository.save(user);
-
-            session.setAttribute("user", user);
-
-            model.addAttribute("success", "Đổi mật khẩu thành công");
-
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Mật khẩu mới không khớp");
             return "change-password";
-        
+        }
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        session.setAttribute("user", user);
+        model.addAttribute("success", "Đổi mật khẩu thành công");
+
+        return "change-password";
     }
 }
